@@ -7,8 +7,7 @@ class Mailer extends helper.Mail {
     super();
 
     this.sgApi = sendgrid(keys.sendGridKey);
-
-    this.from_email = new helper.Email("coovadia.moe@gmail.com");
+    this.from_email = new helper.Email("no-reply@emaily.com");
     this.subject = subject;
     this.body = new helper.Content("text/html", content);
     this.recipients = this.formatAddresses(recipients);
@@ -23,6 +22,7 @@ class Mailer extends helper.Mail {
       return new helper.Email(email);
     });
   }
+
   addClickTracking() {
     const trackingSettings = new helper.TrackingSettings();
     const clickTracking = new helper.ClickTracking(true, true);
@@ -33,6 +33,7 @@ class Mailer extends helper.Mail {
 
   addRecipients() {
     const personalize = new helper.Personalization();
+
     this.recipients.forEach((recipient) => {
       personalize.addTo(recipient);
     });
@@ -42,10 +43,11 @@ class Mailer extends helper.Mail {
   async send() {
     const request = this.sgApi.emptyRequest({
       method: "POST",
-      path: "v3/mailsend",
+      path: "/v3/mail/send",
       body: this.toJSON(),
     });
-    const response = this.sgApi.API(request);
+
+    const response = await this.sgApi.API(request);
     return response;
   }
 }
